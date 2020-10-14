@@ -21,10 +21,6 @@ global:
 csi-sidecars-rbac:
   enabled: true
 
-
-csi-hostpath-chart:
-  enabled: true
-
 csi-s3-chart:
   enabled: true
 # baseRepo: "anotherrepo"

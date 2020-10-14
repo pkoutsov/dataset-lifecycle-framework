@@ -6,9 +6,6 @@ version: 0.1.0
 appVersion: 0.1.0
 
 dependencies:
-  - name: csi-hostpath-chart
-    version: 0.1.0
-    condition: csi-hostpath-chart.enabled
   - name: csi-sidecars-rbac
     version: 0.1.0
     condition: csi-sidecars-rbac.enabled
