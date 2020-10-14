@@ -2,10 +2,12 @@ package dataset
 
 import (
 	"context"
+	b64 "encoding/base64"
 	comv1alpha1 "github.com/IBM/dataset-lifecycle-framework/src/dataset-operator/pkg/apis/com/v1alpha1"
 	"gopkg.in/yaml.v2"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/types"
 	"os"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
@@ -141,13 +143,25 @@ func (r *ReconcileDataset) Reconcile(request reconcile.Request) (reconcile.Resul
 					reqLogger.Error(err,"Error while creating pod download")
 					return reconcile.Result{},err
 				}
-				//TODO obviously we need to obtain the keys
+				minioConf := &v1.Secret{}
+				err = r.client.Get(context.TODO(),types.NamespacedName{
+					Namespace: os.Getenv("OPERATOR_NAMESPACE"),
+					Name:      "minio-conf",
+				},minioConf)
+				if err != nil {
+					reqLogger.Error(err,"Error while getting minio-conf secret")
+					return reconcile.Result{},err
+				}
+				endpoint, _ := b64.StdEncoding.DecodeString(b64.StdEncoding.EncodeToString(minioConf.Data["ENDPOINT"]))
+				accessKey, _ := b64.StdEncoding.DecodeString(b64.StdEncoding.EncodeToString(minioConf.Data["AWS_ACCESS_KEY_ID"]))
+				secretAccessKey, _ := b64.StdEncoding.DecodeString(b64.StdEncoding.EncodeToString(minioConf.Data["AWS_SECRET_ACCESS_KEY"]))
+				reqLogger.Info(string(endpoint))
 				newDatasetInternalInstance.Spec = comv1alpha1.DatasetSpec{
 					Local: map[string]string{
 						"type": "COS",
-						"accessKeyID": "minio",
-						"secretAccessKey": "minio123",
-						"endpoint": "http://minio-service:9000",
+						"accessKeyID": string(accessKey),
+						"secretAccessKey": string(secretAccessKey),
+						"endpoint": string(endpoint),
 						"readonly": "true",
 						"bucket": bucket,
 						"region": "",
