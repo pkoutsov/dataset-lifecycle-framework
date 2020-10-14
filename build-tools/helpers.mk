@@ -49,10 +49,10 @@ define install_sidecar
 	\nRUN cd /tmp-code && go mod download\
 	\nCOPY . /$(3)\
 	\nRUN cd /$(3) && make build" | tee -a ./_tmp/$(3)/Dockerfile-$(3).installer ;\
-	docker build --network=host --build-arg=ARCH=$(ARCH) -t $(3)-installer -f ./_tmp/$(3)/Dockerfile-$(3).installer ./_tmp/$(3) ;\
+	docker build --build-arg=ARCH=$(ARCH) -t $(3)-installer -f ./_tmp/$(3)/Dockerfile-$(3).installer ./_tmp/$(3) ;\
 	mkdir -p ./_tmp/$(3)/bin ;\
 	docker run --rm -v $$(pwd)/_tmp/$(3)/bin:/tmp-bin $(3)-installer sh -c "cp -r /$(3)/bin/* /tmp-bin" ;\
-	cd ./_tmp/$(3) &&	docker build --network=host -t $(4)-$(ARCH) .
+	cd ./_tmp/$(3) &&	docker build -t $(4)-$(ARCH) .
 endef
 
 #1: local directory name
