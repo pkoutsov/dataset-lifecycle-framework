@@ -21,8 +21,7 @@ spec:
       # Volumes used by this deployment
       volumes:
         - name: data
-          persistentVolumeClaim:
-            claimName: minio-pvc
+          emptyDir: {}
       containers:
         - name: minio
           # Volume mounts for this container

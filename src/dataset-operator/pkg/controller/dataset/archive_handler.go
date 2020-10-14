@@ -16,28 +16,34 @@ func getPodDataDownload(dataset *comv1alpha1.Dataset, operatorNamespace string) 
 	fileName := path.Base(fileUrl)
 	seconds := int32(1)
 	podSpec := corev1.PodSpec{
-		Volumes: []corev1.Volume{
-			{Name: "minio-pvc", VolumeSource: corev1.VolumeSource{
-				PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-					ClaimName: "minio-pvc",
-				},
-			}},
-		},
 		Containers: []corev1.Container{{
-			Image: "busybox",
-			Name:  "busybox",
+			Image: "yiannisgkoufas/cos-uploader:latest",
+			ImagePullPolicy: corev1.PullAlways,
+			Name:  "cos-uploader",
 			Command: []string{
-				"/bin/sh", "-c", "mkdir -p /data/" + podId + " && wget " + fileUrl + " -P" + " /tmp && " + "tar " + "-xf " + "/tmp/" + fileName + " -C /data/" + podId + " && rm -rf /tmp/" + fileName,
+				"/bin/sh", "-c",
+				"mkdir -p /data/" + podId + " && " +
+				"wget " + fileUrl + " -P" + " /tmp && " +
+				"tar -xf /tmp/" + fileName + " -C /data/" + podId +" && "+
+				"rm -rf /tmp/" + fileName + " && "+
+				"aws s3 cp /data/" + podId +" s3://"+podId+" --recursive --endpoint-url $ENDPOINT && "+
+				"rm -rf /data",
 			},
-			VolumeMounts: []corev1.VolumeMount{
-				{Name: "minio-pvc", MountPath: "/data"},
+			EnvFrom: []corev1.EnvFromSource{
+				{
+					SecretRef: &corev1.SecretEnvSource{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: "minio-conf",
+						},
+					},
+				},
 			},
 		}},
 		RestartPolicy: corev1.RestartPolicyNever,
 	}
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "download-"+podId[:4],
+			Name:      "cos-upload-"+podId[:4],
 			Namespace: operatorNamespace,
 		},
 		Spec: batchv1.JobSpec{
