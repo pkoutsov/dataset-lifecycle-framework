@@ -741,7 +741,7 @@ spec:
       hostNetwork: true
       containers:
         - name: node-driver-registrar
-          image: "quay.io/k8scsi/csi-node-driver-registrar:v1.3.0"
+          image: "yiannisgkoufas/csi-node-driver-registrar:v1.3.0-ppc64le"
           lifecycle:
             preStop:
               exec:
@@ -766,7 +766,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: "yiannisgkoufas/csi-nfs:latest-amd64"
+          image: "yiannisgkoufas/csi-nfs:dev-full-ppc64le"
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -821,7 +821,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: driver-registrar
-          image: "quay.io/k8scsi/csi-node-driver-registrar:v1.3.0"
+          image: "yiannisgkoufas/csi-node-driver-registrar:v1.3.0-ppc64le"
           imagePullPolicy: Always
           args:
             - --v=5
@@ -846,7 +846,7 @@ spec:
             - mountPath: /csi-data-dir
               name: csi-data-dir
         - name: csi-s3
-          image: "yiannisgkoufas/csi-s3:latest-amd64"
+          image: "yiannisgkoufas/csi-s3:dev-full-ppc64le"
           imagePullPolicy: Always
           args:
             - "--v=5"
@@ -952,7 +952,7 @@ spec:
       containers:
         - name: dataset-operator
           # Replace this with the built image name
-          image: "yiannisgkoufas/dataset-operator:readonly-amd64"
+          image: "yiannisgkoufas/dataset-operator:latest-ppc64le"
           command:
             - dataset-operator
           imagePullPolicy: Always
@@ -1004,7 +1004,7 @@ spec:
       serviceAccountName: csi-attacher-nfs
       containers:
         - name: csi-attacher
-          image: "quay.io/k8scsi/csi-attacher:v3.0.0"
+          image: "yiannisgkoufas/csi-attacher:v3.0.0-rc1-ppc64le"
           args:
             - "--v=10"
             - "--csi-address=$(ADDRESS)"
@@ -1016,7 +1016,7 @@ spec:
             - name: socket-dir
               mountPath: /csi
         - name: nfs
-          image: "yiannisgkoufas/csi-nfs:latest-amd64"
+          image: "yiannisgkoufas/csi-nfs:latest-ppc64le"
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -1058,7 +1058,7 @@ spec:
       serviceAccountName: csi-attacher
       containers:
         - name: csi-attacher
-          image: "quay.io/k8scsi/csi-attacher:v3.0.0"
+          image: "yiannisgkoufas/csi-attacher:v3.0.0-rc1-ppc64le"
           imagePullPolicy: Always
           args:
             - --v=5
@@ -1100,7 +1100,7 @@ spec:
       serviceAccountName: csi-provisioner
       containers:
         - name: csi-provisioner
-          image: "quay.io/k8scsi/csi-provisioner:v2.0.2"
+          image: "yiannisgkoufas/csi-provisioner:v2.0.0-rc2-ppc64le"
           imagePullPolicy: Always
           args:
             - -v=5
@@ -1139,7 +1139,7 @@ spec:
       serviceAccountName: dataset-operator
       containers:
         - name: generate-keys
-          image: "yiannisgkoufas/generate-keys:latest-amd64"
+          image: "yiannisgkoufas/generate-keys:dev-full-ppc64le"
           imagePullPolicy: Always
           env:
             - name: DATASET_OPERATOR_NAMESPACE

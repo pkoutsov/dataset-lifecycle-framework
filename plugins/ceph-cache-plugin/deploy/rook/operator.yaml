@@ -66,7 +66,7 @@ spec:
       serviceAccountName: rook-ceph-system
       containers:
       - name: rook-ceph-operator
-        image: res-drl-hpc-docker-local.artifactory.swg-devops.com/rook:v.1.2-amd64
+        image: res-drl-hpc-docker-local.artifactory.swg-devops.com/rook:v1.2-ppc64le
         args: ["ceph", "operator"]
         volumeMounts:
         - mountPath: /var/lib/rook
@@ -236,6 +236,18 @@ spec:
         # The default version of CSI supported by Rook will be started. To change the version
         # of the CSI driver to something other than what is officially supported, change
         # these images to the desired release of the CSI driver.
+        - name: ROOK_CSI_CEPH_IMAGE
+          value: "res-drl-hpc-docker-local.artifactory.swg-devops.com/ceph-csi:v2.1.1-ppc64le"
+        - name: ROOK_CSI_REGISTRAR_IMAGE
+          value: "res-drl-hpc-docker-local.artifactory.swg-devops.com/csi-node-driver-registrar:v1.3.0-ppc64le"
+        - name: ROOK_CSI_RESIZER_IMAGE
+          value: "res-drl-hpc-docker-local.artifactory.swg-devops.com/csi-resizer:v0.5.0-ppc64le"
+        - name: ROOK_CSI_PROVISIONER_IMAGE
+          value: "res-drl-hpc-docker-local.artifactory.swg-devops.com/csi-provisioner:v1.6.0-ppc64le"
+        - name: ROOK_CSI_SNAPSHOTTER_IMAGE
+          value: "res-drl-hpc-docker-local.artifactory.swg-devops.com/csi-snapshotter:v2.1.1-ppc64le"
+        - name: ROOK_CSI_ATTACHER_IMAGE
+          value: "res-drl-hpc-docker-local.artifactory.swg-devops.com/csi-attacher:v2.2.0-ppc64le"        
         #- name: ROOK_CSI_CEPH_IMAGE
         #  value: "quay.io/cephcsi/cephcsi:v2.0.0"
         #- name: ROOK_CSI_REGISTRAR_IMAGE

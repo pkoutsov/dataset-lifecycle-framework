@@ -18,7 +18,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: rook-ceph-tools
-        image: YOUR_REGISTRY/rook:v.1.2-amd64
+        image: res-drl-hpc-docker-local.artifactory.swg-devops.com/rook:v1.2-ppc64le
         command: ["/tini"]
         args: ["-g", "--", "/usr/local/bin/toolbox.sh"]
         imagePullPolicy: IfNotPresent
